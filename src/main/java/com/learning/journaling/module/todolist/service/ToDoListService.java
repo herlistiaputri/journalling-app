@@ -69,9 +69,7 @@ public class ToDoListService {
         if(search != null && !search.isBlank()){
             criteria.add(Criteria.where("title").regex(".*"+search+"*.", "i"));
         }
-        if(!criteria.isEmpty()){
-            query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[0])));
-        }
+        query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[0])));
         return PageableExecutionUtils.getPage(
                 mongoTemplate.find(query,ToDoList.class), pageable,
                 () -> mongoTemplate.count(query.skip(0).limit(0), ToDoList.class));
