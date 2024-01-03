@@ -7,7 +7,6 @@ import com.learning.journaling.module.journal.mapper.JournalMapper;
 import com.learning.journaling.module.journal.service.JournalService;
 import com.learning.journaling.module.user.model.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,9 +32,11 @@ public class JournalController {
     }
 
     @GetMapping("/page")
-    public ResponseEntity<JournalUserResponse> getUserJournal(Pageable pageable){
+    public ResponseEntity<JournalUserResponse> getUserJournal(Pageable pageable,
+                                                              @RequestParam(required = false) String search,
+                                                              @RequestParam(required = false) String year){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(journalMapper.mapToUserResponse(user, journalService.getByUser(pageable, user), pageable));
+        return ResponseEntity.ok(journalMapper.mapToUserResponse(user, journalService.getByUser(pageable, user, search, year), pageable));
     }
 
 }

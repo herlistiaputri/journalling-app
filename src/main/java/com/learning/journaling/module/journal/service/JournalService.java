@@ -8,11 +8,17 @@ import com.learning.journaling.module.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -20,6 +26,7 @@ import java.time.LocalDateTime;
 public class JournalService {
 
     private final JournalRepository journalRepository;
+    private final MongoTemplate mongoTemplate;
 
     public void create(JournalRequest request){
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -38,7 +45,23 @@ public class JournalService {
         return journalRepository.findById(id).orElseThrow(() -> new BaseException(404, "Not Found", "Journal Id Not Found"));
     }
 
-    public Page<Journal> getByUser(Pageable pageable, User user){
-        return journalRepository.findAllByUserId(user.getId(), pageable);
+    public Page<Journal> getByUser(Pageable pageable, User user, String search, String year){
+        Query query = new Query().with(pageable);
+        List<Criteria> criteria = new ArrayList<>();
+        criteria.add(Criteria.where("user").is(user));
+        if(search != null && !search.isBlank()){
+            criteria.add(Criteria.where("title").regex(".*"+search+"*.", "i"));
+        }
+
+        if (year != null && !year.isBlank()){
+            LocalDateTime startOfYear = LocalDateTime.of(Integer.parseInt(year), 1, 1, 0,0);
+            LocalDateTime endOfYear = LocalDateTime.of(Integer.parseInt(year), 12, 31, 23, 59, 59);
+            criteria.add(Criteria.where("createdAt").gte(startOfYear).lt(endOfYear));
+        }
+
+        query.addCriteria(new Criteria().andOperator(criteria.toArray(new Criteria[0])));
+        return PageableExecutionUtils.getPage(
+                mongoTemplate.find(query, Journal.class), pageable,
+                () -> mongoTemplate.count(query.skip(0).limit(0), Journal.class));
     }
 }
