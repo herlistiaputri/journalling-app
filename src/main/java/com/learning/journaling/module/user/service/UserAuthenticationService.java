@@ -1,12 +1,12 @@
 package com.learning.journaling.module.user.service;
 
 import com.learning.journaling.configuration.security.JwtService;
-import com.learning.journaling.configuration.exception.BaseException;
 import com.learning.journaling.module.user.dto.LoginRequest;
 import com.learning.journaling.module.user.dto.UserAuthenticationRequest;
 import com.learning.journaling.module.user.dto.UserAuthenticationResponse;
 import com.learning.journaling.module.user.model.User;
 import com.learning.journaling.module.user.repository.UserRepository;
+import com.learning.journaling.module.user.util.UserValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +26,14 @@ public class UserAuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final UserValidation userValidation;
 
 
     public void userRegister(UserAuthenticationRequest request){
-        validation(request.getEmail());
+        userValidation.checkEmailPattern(request.getEmail());
+        userValidation.emailExistedValidation(request.getEmail());
+        userValidation.checkPassword(request.getPassword());
+        userValidation.checkPin(request.getPin());
         User user =  User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
@@ -53,12 +57,6 @@ public class UserAuthenticationService {
         String jwt = jwtService.generateToken(user);
         return UserAuthenticationResponse.builder().type("Bearer").token(jwt).build();
 
-    }
-
-    private void validation(String email){
-        if(userRepository.existsByEmail(email)){
-            throw new BaseException(400, "Error", "Email has been used");
-        }
     }
 
 }
