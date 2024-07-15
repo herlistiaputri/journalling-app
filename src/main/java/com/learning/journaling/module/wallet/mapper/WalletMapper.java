@@ -1,9 +1,7 @@
 package com.learning.journaling.module.wallet.mapper;
 
-import com.learning.journaling.module.user.model.User;
 import com.learning.journaling.module.wallet.dto.WalletRequest;
 import com.learning.journaling.module.wallet.dto.WalletResponse;
-import com.learning.journaling.module.wallet.module.Category;
 import com.learning.journaling.module.wallet.module.Wallet;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +34,7 @@ public class WalletMapper {
                 .category(wallet.getCategory().getName())
                 .description(wallet.getDescription())
                 .transactionDate(wallet.getTransactionDate().toString())
+                .amount(String.valueOf(wallet.getAmount()))
                 .build();
     }
 

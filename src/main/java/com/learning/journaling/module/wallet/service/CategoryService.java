@@ -28,7 +28,7 @@ public class CategoryService {
     private final MongoTemplate mongoTemplate;
 
     public void create(CategoryRequest request){
-        if(categoryRepository.findByName(request.getName()).isPresent()){
+        if(categoryRepository.findByNameAndType(request.getName(), request.getType()).isPresent()){
             throw new BaseException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), "Category is already exist");
         }
 

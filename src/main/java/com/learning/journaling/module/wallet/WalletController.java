@@ -1,5 +1,6 @@
 package com.learning.journaling.module.wallet;
 
+import com.learning.journaling.module.wallet.dto.WalletReportResponse;
 import com.learning.journaling.module.wallet.dto.WalletRequest;
 import com.learning.journaling.module.wallet.dto.WalletResponse;
 import com.learning.journaling.module.wallet.mapper.WalletMapper;
@@ -53,5 +54,10 @@ public class WalletController {
     public ResponseEntity<Object> deleteById(@PathVariable String id){
         walletService.delete(id);
         return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<WalletReportResponse> getReport(@RequestParam String filter, @RequestParam String month, @RequestParam String year){
+        return ResponseEntity.ok(walletService.getReport(filter, month, year));
     }
 }
