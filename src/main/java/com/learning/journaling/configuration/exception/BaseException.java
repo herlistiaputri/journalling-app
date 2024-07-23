@@ -1,5 +1,6 @@
 package com.learning.journaling.configuration.exception;
 
+import com.learning.journaling.configuration.RequestResponseEnums;
 import lombok.Getter;
 
 @Getter
@@ -13,5 +14,11 @@ public class BaseException extends RuntimeException{
         this.status = status;
         this.message = message;
         this.errorMessage = errorMessage;
+    }
+
+    public BaseException(RequestResponseEnums exceptionEnums) {
+        this.status = exceptionEnums.getStatus();
+        this.message = exceptionEnums.getMessage();
+        this.errorMessage = exceptionEnums.getErrorMessage();
     }
 }

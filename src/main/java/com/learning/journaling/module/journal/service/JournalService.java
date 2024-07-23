@@ -1,5 +1,6 @@
 package com.learning.journaling.module.journal.service;
 
+import com.learning.journaling.configuration.RequestResponseEnums;
 import com.learning.journaling.configuration.exception.BaseException;
 import com.learning.journaling.module.journal.dto.JournalRequest;
 import com.learning.journaling.module.journal.model.Journal;
@@ -42,7 +43,7 @@ public class JournalService {
     }
 
     public Journal getById(String id){
-        return journalRepository.findById(id).orElseThrow(() -> new BaseException(404, "Not Found", "Journal Id Not Found"));
+        return journalRepository.findById(id).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
     }
 
     public Page<Journal> getByUser(Pageable pageable, User user, String search, String year){

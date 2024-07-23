@@ -1,6 +1,7 @@
 package com.learning.journaling.module.todolist.service;
 
 import com.learning.journaling.configuration.exception.BaseException;
+import com.learning.journaling.configuration.RequestResponseEnums;
 import com.learning.journaling.module.todolist.dto.ToDoListRequest;
 import com.learning.journaling.module.todolist.mapper.ToDoListMapper;
 import com.learning.journaling.module.todolist.model.ToDoList;
@@ -43,11 +44,11 @@ public class ToDoListService {
     }
 
     public ToDoList getById(String id){
-        return toDoListRepository.findById(id).orElseThrow(() -> new BaseException(404, "Not Found", "Id Not Found"));
+        return toDoListRepository.findById(id).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
     }
 
     public void delete(String id){
-        ToDoList toDoList = toDoListRepository.findById(id).orElseThrow(() -> new BaseException(404, "Not Found", "Id Not Found"));
+        ToDoList toDoList = toDoListRepository.findById(id).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
         try{
             toDoListDetailRepository.deleteAll(toDoList.getToDoListDetails());
             toDoListRepository.delete(toDoList);
@@ -77,7 +78,7 @@ public class ToDoListService {
 
     public void checkList(String listId){
        ToDoListDetail toDoListDetail =  toDoListDetailRepository.findById(listId)
-               .orElseThrow(() -> new BaseException(404, "Error Not Found", "Id Not Found"));
+               .orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
        toDoListDetail.setDone(!toDoListDetail.isDone());
        toDoListDetailRepository.save(toDoListDetail);
     }

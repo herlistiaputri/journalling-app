@@ -1,5 +1,6 @@
 package com.learning.journaling.module.wallet.service;
 
+import com.learning.journaling.configuration.RequestResponseEnums;
 import com.learning.journaling.configuration.exception.BaseException;
 import com.learning.journaling.module.wallet.dto.CategoryRequest;
 import com.learning.journaling.module.wallet.module.Category;
@@ -29,7 +30,7 @@ public class CategoryService {
 
     public void create(CategoryRequest request){
         if(categoryRepository.findByNameAndType(request.getName(), request.getType()).isPresent()){
-            throw new BaseException(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.name(), "Category is already exist");
+            throw new BaseException(RequestResponseEnums.DUPLICATE_DATA_EXCEPTION);
         }
 
         Category category = new Category();
@@ -43,7 +44,7 @@ public class CategoryService {
     }
 
     public Category getById(String id){
-        return categoryRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), "Id not found"));
+        return categoryRepository.findById(id).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
     }
 
     public void update(String id, CategoryRequest request){

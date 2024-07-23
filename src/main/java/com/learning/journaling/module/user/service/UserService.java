@@ -1,5 +1,6 @@
 package com.learning.journaling.module.user.service;
 
+import com.learning.journaling.configuration.RequestResponseEnums;
 import com.learning.journaling.configuration.exception.BaseException;
 import com.learning.journaling.module.journal.repository.JournalRepository;
 import com.learning.journaling.module.user.model.User;
@@ -17,15 +18,14 @@ public class UserService {
     private final UserRepository userRepository;
 
     public User getById(String id) {
-        return userRepository.findById(id).orElseThrow(() -> new BaseException(404, "Error Not Found", "User id not found"));
+        return userRepository.findById(id).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
     }
 
     public User getByEmail(String email) {
-        return (User) userRepository.findByEmail(email).orElseThrow(() -> new BaseException(404, "Error Not Found", "User id not found"));
+        return (User) userRepository.findByEmail(email).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
     }
 
     public User profile(){
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return user;
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

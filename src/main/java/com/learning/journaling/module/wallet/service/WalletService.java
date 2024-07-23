@@ -1,5 +1,6 @@
 package com.learning.journaling.module.wallet.service;
 
+import com.learning.journaling.configuration.RequestResponseEnums;
 import com.learning.journaling.configuration.exception.BaseException;
 import com.learning.journaling.module.user.model.User;
 import com.learning.journaling.module.wallet.dto.WalletReportResponse;
@@ -16,7 +17,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +46,7 @@ public class WalletService {
     }
 
     public Wallet getById(String id){
-        return walletRepository.findById(id).orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), HttpStatus.NOT_FOUND.name(), "Id not found"));
+        return walletRepository.findById(id).orElseThrow(() -> new BaseException(RequestResponseEnums.ID_NOT_FOUND_EXCEPTION));
     }
 
     public List<Wallet> getList(){
